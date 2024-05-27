@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: main yml file for vpc
+Description: Cfn driver template to deploy VPC
 Parameters:
   project:
     Type: String
@@ -36,43 +36,43 @@ Resources:
         vpcPublicSubnet02Cidr:  10.10.5.0/24
         vpcInternetOutboundCidr: 0.0.0.0/0
         vpcPublicRouteDestinationCidr: 0.0.0.0/0
+
         vpcNaclPublicInboundProtocol: -1
-        vpcNaclPublicOutboundProtocol: -1
-        vpcNaclRuleActionPublicSubnetOutbound: allow
-        vpcNaclRuleActionPublicSubnetInbound: allow
+        # vpcNaclPublicOutboundProtocol: -1
+        # vpcNaclRuleActionPublicSubnetOutbound: allow
+        vpcNaclRuleActionPublicSubnet: allow
         vpcNaclPublicInboundCidr: 0.0.0.0/0
         vpcNaclPublicInboundStartPort: 1
         vpcNaclPublicInboundEndPort: 999
         vpcPrivateRouteDestinationCidr: 0.0.0.0/0
+
         vpcNaclPrivateInboundProtocol: -1
-        vpcNaclPrivateOutboundProtocol: -1
-        vpcNaclRuleActionPrivateSubnetInbound: allow
-        vpcNaclRuleActionPrivateSubnetOutbound: allow
+        # vpcNaclPrivateOutboundProtocol: -1
+        vpcNaclRuleActionPrivateSubnet: allow
+        # vpcNaclRuleActionPrivateSubnetOutbound: allow
         vpcNaclPrivateInboundCidr: 0.0.0.0/0
         vpcNaclPrivateInboundStartPort: 1
         vpcNaclPrivateInboundEndPort: 999
+
         vpcShieldRouteDestinationCidr: 0.0.0.0/0
         vpcNaclShieldInboundProtocol: -1
-        vpcNaclShieldOutboundProtocol: -1
-        vpcNaclRuleActionShieldSubnetInbound: allow
-        vpcNaclRuleActionShieldSubnetOutbound: allow
+        # vpcNaclShieldOutboundProtocol: -1
+        vpcNaclRuleActionShieldSubnet: allow
+        # vpcNaclRuleActionShieldSubnetOutbound: allow
         vpcNaclShieldInboundCidr: 0.0.0.0/0
         vpcNaclShieldInboundStartPort: 1
         vpcNaclShieldInboundEndPort: 999
+
         vpcDnsSupport: true
         vpcDnsHostnames: true
         vpcInstanceTennancy: default
-        vpcMapPublicIpforPublicSubnet: true
+        vpcAssignIpforPublicSubnet: true
 
 Outputs:
-  vpcId:
-    Description: VPC main 
+  vpcStackId:
+    Description: VPC stack id 
     Value: !Ref vpc
     Export:
-      Name: !Sub "${project}-${app}-${env}-vpcStack-${AWS::Region}"
-
-
-
-
+      Name: !Sub "${project}-${app}-${env}-vpcStackId-${AWS::Region}"
 
 

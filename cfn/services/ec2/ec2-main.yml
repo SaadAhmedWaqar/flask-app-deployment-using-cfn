@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: main yml file for vpc
+Description: Cfn driver template for ec2 deployment
 Parameters:
   project:
     Type: String
@@ -28,14 +28,15 @@ Resources:
         app: !Ref app
         env: !Ref env
 
-      ec2KeyName:
-      ec2InstanceType: t3.micro
-      ec2IamInstanceProfile:
-      ec2LaunchTemplate:
-      ec2SecurityGroupIds:
-      ec2SubnetId: !ImportValue 
-        Fn::Sub: "${project}-${app}-${env}-privateSubnet01Az01Id-${AWS::Region}"
-      #ec2UserData:
+        ec2KeyName: app-test
+        ec2ImageId: ami-07caf09b362be10b8
+        ec2InstanceType: t3.micro
+        ec2IamInstanceProfile:
+        ec2LaunchTemplate:
+        ec2SecurityGroupIds:
+        ec2SubnetId: !ImportValue 
+          Fn::Sub: "${project}-${app}-${env}-privateSubnet01Az01Id-${AWS::Region}"
+        #ec2UserData:
 
 
 

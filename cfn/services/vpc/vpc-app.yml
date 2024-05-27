@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: cfn template to deploy vpc and its components
+Description: Cfn template to deploy VPC and its components
 
 Parameters:
   project:
@@ -20,127 +20,128 @@ Parameters:
     Type: String
     Default : true
     AllowedValues: [true, false]
-    Description: Enable or disable DNS support in vpc 
+    Description: Select true to enable, false to disable DNS support in vpc 
   vpcDnsHostnames:
     Type: String
     Default : true
     AllowedValues: [true, false]
-    Description: Enable or disable DNS hostnames in vpc
+    Description: Select true to enable, false to disable DNS hostnames in vpc
   vpcInstanceTennancy:
     Type: String
     Default : default
     AllowedValues: [default, dedicated]
-    Description: Define either default (shared) or dedicated instance tennacny 
-  vpcMapPublicIpforPublicSubnet:
+    Description: Select default for shared instance tennacny, dedicated for dedicated host
+  vpcAssignIpforPublicSubnet: 
     Type: String
     Default : true
     AllowedValues: [true, false]
-    Description: Either auto assign public IP or not for instances launched in public subnet
+    Description: Select true to assign public IP for instances launched in public subnet, false otherwise
   vpcInternetOutboundCidr:
     Type: String
-    Description: Outbound internet traffic address
+    Description: Internet IPv4 address range for outgoing traffic
+
+
   vpcPrivateSubnet01Cidr:
     Type: String
-    Description: IPv4 address range for private subnet 1 in AZ1
-  vpcShieldSubnet01Cidr:
-    Type: String
-    Description: IPv4 address range for shield subnet 1 in AZ1
-  vpcPublicSubnet01Cidr:
-    Type: String
-    Description: IPv4 address range for public subnet 1 in AZ1
+    Description: IPv4 address range for private subnet 1 in Az01
   vpcPrivateSubnet02Cidr:
     Type: String
-    Description: IPv4 address range for private subnet 2 in AZ2
-  vpcShieldSubnet02Cidr:
-    Type: String
-    Description: IPv4 address range for shield subnet 2 in AZ2
-  vpcPublicSubnet02Cidr:
-    Type: String
-    Description: IPv4 address range for public subnet 2 in AZ2
-  vpcPublicRouteDestinationCidr:
-    Type: String
-    Description: IPv4 address range for public subnet outbound traffic
-  vpcNaclPublicInboundProtocol:
-    Type: String
-    Description: Inbound IP protocol for public subnets NACL
-  vpcNaclPublicOutboundProtocol:
-    Type: String
-    Description: Outbound IP protocol for public subnets NACL
-  vpcNaclRuleActionPublicSubnetInbound:
-    Type: String
-    Default: allow
-    AllowedValues: [allow, deny]
-    Description: Allow or deny inbound traffic for public subnet based on inbound NACL rule  
-  vpcNaclRuleActionPublicSubnetOutbound:
-    Type: String
-    Default: allow
-    AllowedValues: [allow, deny]
-    Description: Allow or deny outbound traffic for public subnet based on outbound NACL rule  
-  vpcNaclPublicInboundCidr:
-    Type: String
-    Description: Inbound IPv4 address range for public subnet NACL
-  vpcNaclPublicInboundStartPort:
-    Type: String
-    Description: Port range start point for public subnet inbound NACL rule
-  vpcNaclPublicInboundEndPort:
-    Type: String
-    Description: Port range end point for public subnet inbound NACL rule
+    Description: IPv4 address range for private subnet 2 in Az02
   vpcPrivateRouteDestinationCidr:
     Type: String
     Description: IPv4 address range for private subnet outbound traffic
   vpcNaclPrivateInboundProtocol:
     Type: String
     Description: Inbound IP protocol for private subnets NACL
-  vpcNaclPrivateOutboundProtocol:
-    Type: String
-    Description: Outbound IP protocol for private subnets NACL
-  vpcNaclRuleActionPrivateSubnetInbound:
+  vpcNaclRuleActionPrivateSubnet:
     Type: String
     Default: allow
     AllowedValues: [allow, deny]
     Description: Allow or deny inbound traffic for private subnet based on NACL rule  
-  vpcNaclRuleActionPrivateSubnetOutbound:
-    Type: String
-    Default: allow
-    AllowedValues: [allow, deny]
-    Description: Allow or deny outbound traffic for private subnet based on NACL rule  
+
   vpcNaclPrivateInboundCidr:
     Type: String
     Description: Inbound IPv4 address range for private subnet NACL
   vpcNaclPrivateInboundStartPort:
     Type: String
-    Description: Port range start point for private subnet inbound NACL 
+    Description: The starting port for inbound NACL rules in private subnet 
   vpcNaclPrivateInboundEndPort:
     Type: String
-    Description: Port range end point for private subnet inbound NACL 
+    Description: The ending port for inbound NACL rules in private subnet
+
+
+
+
+  vpcPublicSubnet01Cidr:
+    Type: String
+    Description: IPv4 address range for public subnet 1 in Az01
+  vpcPublicSubnet02Cidr:
+    Type: String
+    Description: IPv4 address range for public subnet 2 in Az02
+  vpcPublicRouteDestinationCidr:
+    Type: String
+    Description: IPv4 address range for public subnet outbound traffic
+  vpcNaclPublicInboundProtocol:
+    Type: String
+    Description: Inbound IP protocol for public subnets NACL
+  # vpcNaclPublicOutboundProtocol:
+  #   Type: String
+  #   Description: Outbound IP protocol for public subnets NACL
+  vpcNaclRuleActionPublicSubnet:
+    Type: String
+    Default: allow
+    AllowedValues: [allow, deny]
+    Description: Allow or deny inbound traffic for public subnet based on inbound NACL rule  
+  # vpcNaclRuleActionPublicSubnetOutbound:
+  #   Type: String
+  #   Default: allow
+  #   AllowedValues: [allow, deny]
+  #   Description: Allow or deny outbound traffic for public subnet based on outbound NACL rule  
+  vpcNaclPublicInboundCidr:
+    Type: String
+    Description: Inbound IPv4 address range for public subnet NACL
+  vpcNaclPublicInboundStartPort:
+    Type: String
+    Description: The starting port for inbound NACL rules in public subnet
+  vpcNaclPublicInboundEndPort:
+    Type: String
+    Description: The ending port for inbound NACL rules in public subnet
+
+
+  vpcShieldSubnet01Cidr:
+    Type: String
+    Description: IPv4 address range for shield subnet 1 in Az01
+  vpcShieldSubnet02Cidr:
+    Type: String
+    Description: IPv4 address range for shield subnet 2 in Az02
   vpcShieldRouteDestinationCidr:
     Type: String
     Description: IPv4 destination address for shield subnet outbound traffic
   vpcNaclShieldInboundProtocol:
     Type: String
     Description: Inbound IP protocol for shield subnets NACL
-  vpcNaclShieldOutboundProtocol:
-    Type: String
-    Description: Outbound IP protocol for shield subnets NACL
-  vpcNaclRuleActionShieldSubnetInbound:
+  # vpcNaclShieldOutboundProtocol:
+  #   Type: String
+  #   Description: Outbound IP protocol for shield subnets NACL
+  vpcNaclRuleActionShieldSubnet:
     Type: String
     Default: allow
     AllowedValues: [allow, deny]
     Description: Allow or deny inbound traffic for shield subnet based on the NACL rule  
-  vpcNaclRuleActionShieldSubnetOutbound:
-    Type: String
-    Default: allow
-    AllowedValues: [allow, deny]
-    Description: Allow or deny outbound traffic for shield subnet based on the NACL rule 
+  # vpcNaclRuleActionShieldSubnetOutbound:
+  #   Type: String
+  #   Default: allow
+  #   AllowedValues: [allow, deny]
+  #   Description: Allow or deny outbound traffic for shield subnet based on the NACL rule 
   vpcNaclShieldInboundCidr:
     Type: String
     Description: Inbound IPv4 address range for shield subnet NACL
   vpcNaclShieldInboundStartPort:
     Type: String
-    Description: Port range start point for shield subnet inbound NACL
+    Description: The starting port for inbound NACL rules in shield subnet
   vpcNaclShieldInboundEndPort:
     Type: String
-    Description: Port range end point for private subnet inbound NACL
+    Description: The ending port for inbound NACL rules in public subnet
 
 Resources:
   vpc:
@@ -198,7 +199,7 @@ Resources:
           Value: !Ref env
         - Key: app
           Value: !Ref app 
-  privateSubnet01Az01RouteTableAssociation:
+  privateSubnet01Az01RtbAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     DependsOn:
       - privateSubnet01Az01
@@ -276,7 +277,7 @@ Resources:
       NetworkAclId: !Ref networkAclPrivateSubnet01Az01
       RuleNumber: 100
       Protocol: !Ref vpcNaclPrivateInboundProtocol
-      RuleAction: !Ref vpcNaclRuleActionPrivateSubnetInbound
+      RuleAction: !Ref vpcNaclRuleActionPrivateSubnet
       Egress: false
       CidrBlock: !Ref vpcNaclPrivateInboundCidr
       PortRange:
@@ -288,8 +289,8 @@ Resources:
     Properties:
       NetworkAclId: !Ref networkAclPrivateSubnet01Az01
       RuleNumber: 100
-      Protocol: !Ref vpcNaclPrivateOutboundProtocol
-      RuleAction: !Ref vpcNaclRuleActionPrivateSubnetOutbound
+      Protocol: -1
+      RuleAction: allow
       Egress: true
       CidrBlock: !Ref vpcInternetOutboundCidr
   privateSubnet01Az01Naclassociation:
@@ -306,7 +307,7 @@ Resources:
     Properties:
       AvailabilityZone: !Select [0, !GetAZs '']
       CidrBlock: !Ref vpcPublicSubnet01Cidr
-      MapPublicIpOnLaunch: !Ref vpcMapPublicIpforPublicSubnet
+      MapPublicIpOnLaunch: !Ref vpcAssignIpforPublicSubnet
       VpcId: !Ref vpc
       Tags:
         - Key: Name
@@ -340,7 +341,7 @@ Resources:
           Value: !Ref env
         - Key: app
           Value: !Ref app 
-  publicSubnet01Az01RouteTableAssociation:
+  publicSubnet01Az01RtbAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     DependsOn: 
       - publicSubnet01Az01
@@ -368,7 +369,7 @@ Resources:
       NetworkAclId: !Ref networkAclPublicSubnet01Az01
       RuleNumber: 100
       Protocol: !Ref vpcNaclPublicInboundProtocol 
-      RuleAction: !Ref vpcNaclRuleActionPublicSubnetInbound
+      RuleAction: !Ref vpcNaclRuleActionPublicSubnet
       Egress: false
       CidrBlock: !Ref vpcNaclPublicInboundCidr
       PortRange:
@@ -380,8 +381,8 @@ Resources:
     Properties:
       NetworkAclId: !Ref networkAclPublicSubnet01Az01
       RuleNumber: 100
-      Protocol: !Ref vpcNaclPublicOutboundProtocol
-      RuleAction: !Ref vpcNaclRuleActionPublicSubnetOutbound
+      Protocol: -1
+      RuleAction: allow
       Egress: true
       CidrBlock: !Ref vpcInternetOutboundCidr
   publicSubnet01Az01Naclassociation:
@@ -431,7 +432,7 @@ Resources:
           Value: !Ref env
         - Key: app
           Value: !Ref app 
-  shieldSubnet01Az01RouteTableAssociation:
+  shieldSubnet01Az01RtbAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     DependsOn:
       - shieldSubnet01Az01
@@ -459,7 +460,7 @@ Resources:
       NetworkAclId: !Ref networkAclShieldSubnet01Az01
       RuleNumber: 100
       Protocol: !Ref vpcNaclShieldInboundProtocol
-      RuleAction: !Ref vpcNaclRuleActionShieldSubnetInbound
+      RuleAction: !Ref vpcNaclRuleActionShieldSubnet
       Egress: false
       CidrBlock: !Ref vpcNaclShieldInboundCidr
       PortRange:
@@ -471,8 +472,8 @@ Resources:
     Properties:
       NetworkAclId: !Ref networkAclShieldSubnet01Az01
       RuleNumber: 100
-      Protocol: !Ref vpcNaclShieldOutboundProtocol
-      RuleAction: !Ref vpcNaclRuleActionShieldSubnetOutbound
+      Protocol: -1
+      RuleAction: allow
       Egress: true
       CidrBlock: !Ref vpcInternetOutboundCidr
   shieldSubnet01Az01Naclassociation:
@@ -523,7 +524,7 @@ Resources:
           Value: !Ref env
         - Key: app
           Value: !Ref app 
-  privateSubnet02Az02RouteTableAssociation:
+  privateSubnet02Az02RtbAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     DependsOn:
       - privateSubnet02Az02
@@ -581,7 +582,7 @@ Resources:
       NetworkAclId: !Ref networkAclPrivateSubnet02Az02
       RuleNumber: 100
       Protocol: !Ref vpcNaclPrivateInboundProtocol
-      RuleAction: !Ref vpcNaclRuleActionPrivateSubnetInbound
+      RuleAction: !Ref vpcNaclRuleActionPrivateSubnet
       Egress: false
       CidrBlock: !Ref vpcNaclPrivateInboundCidr
       PortRange:
@@ -593,8 +594,8 @@ Resources:
     Properties:
       NetworkAclId: !Ref networkAclPrivateSubnet02Az02
       RuleNumber: 100
-      Protocol: !Ref vpcNaclPrivateOutboundProtocol
-      RuleAction: !Ref vpcNaclRuleActionPrivateSubnetOutbound
+      Protocol: -1
+      RuleAction: allow
       Egress: true
       CidrBlock: !Ref vpcInternetOutboundCidr
   privateSubnet02Az02Naclassociation:
@@ -611,7 +612,7 @@ Resources:
     Properties:
       AvailabilityZone: !Select [1, !GetAZs '']
       CidrBlock: !Ref vpcPublicSubnet02Cidr
-      MapPublicIpOnLaunch: !Ref vpcMapPublicIpforPublicSubnet
+      MapPublicIpOnLaunch: !Ref vpcAssignIpforPublicSubnet
       VpcId: !Ref vpc
       Tags:
         - Key: Name
@@ -645,7 +646,7 @@ Resources:
           Value: !Ref env
         - Key: app
           Value: !Ref app 
-  publicSubnet02Az02RouteTableAssociation:
+  publicSubnet02Az02RtbAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     DependsOn: 
       - publicSubnet02Az02
@@ -673,7 +674,7 @@ Resources:
       NetworkAclId: !Ref networkAclPublicSubnet02Az02
       RuleNumber: 100
       Protocol: !Ref vpcNaclPublicInboundProtocol
-      RuleAction: !Ref vpcNaclRuleActionPublicSubnetInbound
+      RuleAction: !Ref vpcNaclRuleActionPublicSubnet
       Egress: false
       CidrBlock: !Ref vpcNaclPublicInboundCidr
       PortRange:
@@ -685,8 +686,8 @@ Resources:
     Properties:
       NetworkAclId: !Ref networkAclPublicSubnet02Az02
       RuleNumber: 100
-      Protocol: !Ref vpcNaclPublicOutboundProtocol
-      RuleAction: !Ref vpcNaclRuleActionPublicSubnetOutbound
+      Protocol: -1
+      RuleAction: allow
       Egress: true
       CidrBlock: !Ref vpcInternetOutboundCidr
   publicSubnet02Az02Naclassociation:
@@ -736,7 +737,7 @@ Resources:
           Value: !Ref env
         - Key: app
           Value: !Ref app 
-  shieldSubnet02Az02RouteTableAssociation: 
+  shieldSubnet02Az02RtbAssociation: 
     Type: AWS::EC2::SubnetRouteTableAssociation
     DependsOn:
       - shieldSubnet02Az02
@@ -764,7 +765,7 @@ Resources:
       NetworkAclId: !Ref networkAclShieldSubnet02Az02
       RuleNumber: 100
       Protocol: !Ref vpcNaclShieldInboundProtocol
-      RuleAction: !Ref vpcNaclRuleActionShieldSubnetInbound
+      RuleAction: !Ref vpcNaclRuleActionShieldSubnet
       Egress: false
       CidrBlock: !Ref vpcNaclShieldInboundCidr
       PortRange:
@@ -776,8 +777,8 @@ Resources:
     Properties:
       NetworkAclId: !Ref networkAclShieldSubnet02Az02
       RuleNumber: 100
-      Protocol: !Ref vpcNaclShieldOutboundProtocol
-      RuleAction: !Ref vpcNaclRuleActionShieldSubnetOutbound
+      Protocol: -1
+      RuleAction: allow
       Egress: true
       CidrBlock: !Ref vpcInternetOutboundCidr
   shieldSubnet02Az02Naclassociation:
@@ -801,12 +802,12 @@ Outputs:
     Export:
       Name: !Sub "${project}-${app}-${env}-internetGatewayId-${AWS::Region}"
   natGateway01Az01Id:
-    Description: ID of NAT gateway 1 in AZ1
+    Description: ID of NAT gateway 1 in Az01
     Value: !Ref natGateway01Az01
     Export:
       Name: !Sub "${project}-${app}-${env}-natGateway01Az01-${AWS::Region}"
   natGateway01Az02Id:
-    Description: ID of NAT gateway 1 in AZ2
+    Description: ID of NAT gateway 1 in Az02
     Value: !Ref natGateway01Az02
     Export:
       Name: !Sub "${project}-${app}-${env}-natGateway2Id-${AWS::Region}"
@@ -821,92 +822,92 @@ Outputs:
     Export:
       Name: !Sub "${project}-${app}-${env}-elasticIPAddress2-${AWS::Region}"
   publicSubnet01Az01Id:
-    Description: ID of public subnet 1 in AZ 1
+    Description: ID of public subnet 01 in Az01
     Value: !Ref publicSubnet01Az01
     Export:
       Name: !Sub "${project}-${app}-${env}-publicSubnet01Az01Id-${AWS::Region}"
   privateSubnet01Az01Id:
-    Description: ID of private subnet 1 in AZ1
+    Description: ID of private subnet 01 in Az01
     Value: !Ref privateSubnet01Az01
     Export:
       Name: !Sub "${project}-${app}-${env}-privateSubnet01Az01Id-${AWS::Region}"  
   shieldSubnet01Az01Id:
-    Description: ID of shield subnet 1 in AZ1
+    Description: ID of shield subnet 01 in Az01
     Value: !Ref shieldSubnet01Az01
     Export:
       Name: !Sub "${project}-${app}-${env}-shieldSubnet01Az01Id-${AWS::Region}"
   publicSubnet02Az02Id:
-    Description: ID of public subnet 2 in AZ 2
+    Description: ID of public subnet 02 in Az02
     Value: !Ref publicSubnet02Az02
     Export:
       Name: !Sub "${project}-${app}-${env}-publicSubnet02Az02Id-${AWS::Region}"
   privateSubnet02Az02Id:
-    Description: ID of private subnet 2 in AZ 2
+    Description: ID of private subnet 02 in Az02
     Value: !Ref privateSubnet02Az02
     Export:
       Name: !Sub "${project}-${app}-${env}-privateSubnet02Az02Id-${AWS::Region}"
   shieldSubnet02Az02Id:
-    Description: ID of shield subnet 2 in AZ 2
+    Description: ID of shield subnet 02 in Az02
     Value: !Ref shieldSubnet02Az02
     Export:
       Name: !Sub "${project}-${app}-${env}-shieldSubnet02Az02Id-${AWS::Region}"
   routeTablePublicSubnet01Az01Id:
-    Description: ID of route table for public subnet 1 in AZ 1
+    Description: ID of route table for public subnet 01 in Az01
     Value: !Ref routeTablePublicSubnet01Az01
     Export:
       Name: !Sub "${project}-${app}-${env}-routeTablePublicSubnet01Az01Id-${AWS::Region}"
   networkAclPublicSubnet01Az01Id:
-    Description: ID of NACL of route table for public subnet 1 in AZ 1
+    Description: ID of NACL of route table for public subnet 01 in Az01
     Value: !Ref networkAclPublicSubnet01Az01
     Export:
       Name: !Sub "${project}-${app}-${env}-networkAclPublicSubnet01Az01Id-${AWS::Region}"
   routeTablePrivateSubnet01Az01Id:
-    Description: ID of route table for private subnet 1 in AZ 1
+    Description: ID of route table for private subnet 01 in Az01
     Value: !Ref routeTablePrivateSubnet01Az01
     Export:
       Name: !Sub "${project}-${app}-${env}-routeTablePrivateSubnet01Az01Id-${AWS::Region}"
   networkAclPrivateSubnet01Az01Id:
-    Description: ID of NACL of route table for private subnet 1 in AZ 1
+    Description: ID of NACL of route table for private subnet 01 in Az01
     Value: !Ref networkAclPrivateSubnet01Az01
     Export:
       Name: !Sub "${project}-${app}-${env}-networkAclPrivateSubnet01Az01Id-${AWS::Region}"
   routeTableShieldSubnet01Az01Id:
-    Description: ID of route table for shield subnet 1 in AZ 1
+    Description: ID of route table for shield subnet 01 in Az01
     Value: !Ref routeTableShieldSubnet01Az01
     Export:
       Name: !Sub "${project}-${app}-${env}-routeTableShieldSubnet01Az01Id-${AWS::Region}"
   networkAclShieldSubnet01Az01Id:
-    Description: ID of NACL of route table for shield subnet 1 in AZ 1
+    Description: ID of NACL of route table for shield subnet 01 in Az01
     Value: !Ref networkAclShieldSubnet01Az01
     Export:
       Name: !Sub "${project}-${app}-${env}-networkAclShieldSubnet01Az01Id-${AWS::Region}"
   routeTablePublicSubnet02Az02Id:
-    Description: ID of route table for public subnet 2 in AZ 2
+    Description: ID of route table for public subnet 02 in Az02
     Value: !Ref routeTablePublicSubnet02Az02
     Export:
       Name: !Sub "${project}-${app}-${env}-routeTablePublicSubnet02Az02Id-${AWS::Region}"
   networkAclPublicSubnet02Az02Id:
-    Description: ID of NACL of route table for public subnet 2 in AZ 2
+    Description: ID of NACL of route table for public subnet 02 in Az02
     Value: !Ref networkAclPublicSubnet02Az02
     Export:
       Name: !Sub "${project}-${app}-${env}-networkAclPublicSubnet02Az02Id-${AWS::Region}"   
   routeTablePrivateSubnet02Az02Id:
-    Description: ID of route table for private subnet 2 in AZ 2
+    Description: ID of route table for private subnet 02 in Az02
     Value: !Ref routeTablePrivateSubnet02Az02
     Export:
       Name: !Sub "${project}-${app}-${env}-routeTablePrivateSubnet02Az02Id-${AWS::Region}"
   networkAclPrivateSubnet02Az02Id:
-    Description: ID of NACL of route table for private subnet 2 in AZ 2
+    Description: ID of NACL of route table for private subnet 02 in Az02
     Value: !Ref networkAclPrivateSubnet02Az02
     Export:
       Name: !Sub "${project}-${app}-${env}-networkAclPrivateSubnet02Az02Id-${AWS::Region}"
   routeTableShieldSubnet02Az02Id:
-    Description: ID of route table for shield subnet 2 in AZ 2
+    Description: ID of route table for shield subnet 02 in Az02
     Value: !Ref routeTableShieldSubnet02Az02
     Export:
       Name: !Sub "${project}-${app}-${env}-routeTableShieldSubnet02Az02Id-${AWS::Region}"
   networkAclShieldSubnet02Az02Id:
-    Description: ID of NACL of route table for shield subnet 2 in AZ 2
+    Description: ID of NACL of route table for shield subnet 02 in Az02
     Value: !Ref networkAclShieldSubnet02Az02
     Export:
       Name: !Sub "${project}-${app}-${env}-networkAclShieldSubnet02Az02Id-${AWS::Region}"
