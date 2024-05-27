@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: cfn template to deploy IAM roles
+
+Parameters:
+  project:
+    Type: String
+    Description: Project Name
+  env:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, qa, uat, prod]
+    Description: Environment name
+  app:
+    Type: String
+    Description: App Name
+
+  dBInstanceIdentifier:
+    Type: String
+    Description: Name for the DB instance
+  dbName: 
+    Type: String
+    Description: Name for the DB 
+
+
+Resources:
+  dbSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties:
+        DBSubnetGroupDescription: "Subnet Group for database"
+        DBSubnetGroupName: !Sub "${project}-${app}-${env}-${dBInstanceIdentifier}-${AWS::Region}"
+        SubnetIds: 
+          - !Ref 
+          - !Ref 
+        Tags:
+        - Key: name
+          Value: !Sub "${project}-${app}-${env}-${dBInstanceIdentifier}-${AWS::Region}"
+        - Key: project
+          Value: !Ref project
+        - Key: app
+          Value: !Ref app
+        - Key: environment
+          Value: !Ref env

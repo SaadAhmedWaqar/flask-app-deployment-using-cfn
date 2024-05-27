@@ -1,0 +1,67 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: cfn template to deploy IAM roles
+
+Parameters:
+  project:
+    Type: String
+    Description: Project Name
+  env:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, qa, uat, prod]
+    Description: Environment name
+  app:
+    Type: String
+    Description: App Name
+
+Resources:
+  ec2IamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${project}-${env}-ec2IamRole-${AWS::Region}
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/SecretsManagerReadWrite
+        - arn:aws:iam::aws:policy/AmazonRDSFullAccess
+      Tags:
+        - Key: Name
+          Value: !Sub ${project}-${env}-ec2IamRole-${AWS::Region}
+        - Key: project
+          Value: !Ref project
+        - Key: environment
+          Value: !Ref env
+
+
+  rdsIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${project}-${env}-rdsIamRole-${AWS::Region}
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - rds.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+        # - arn:aws:iam::aws:policy/AmazonRDSFullAccess
+      Tags:
+        - Key: Name
+          Value: !Sub ${project}-${env}-rdsIamRole-${AWS::Region}
+        - Key: project
+          Value: !Ref project
+        - Key: environment
+          Value: !Ref env
+
+

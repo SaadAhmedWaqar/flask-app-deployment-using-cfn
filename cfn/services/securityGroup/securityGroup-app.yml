@@ -1,0 +1,266 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: cfn template to create secutity groups
+
+Parameters:
+  project:
+    Type: String
+    Description: Project Name
+  env:
+    Type: String
+    Description: Environment Name
+  app:
+    Type: String
+    Description: App Name
+
+  sgVpcId:
+    Type: String
+    Description: Vpc ID
+
+  sgBastionInboundCidrIp:
+    Type: String
+    Description: Inbound Cidr for Bastion Host Security Group Inbound Rule
+
+  sgBastionInboundIpProtocol:
+    Type: String
+    Description: Inbound IP Protocol for Bastion Host Security Group Inbound Rule
+
+  sgBastionInboundPortRangeStart:
+    Type: String
+    Description:  Port range start port number for bastion inbound rule 
+
+  sgBastionInboundPortRangeEnd:
+    Type: String
+    Description:  Port range end port number for bastion inbound rule 
+
+  sgBastionOutboundCidrIp:
+    Type: String
+    Description: Outbound Cidr for Bastion Host Security Group Outbound Rule
+
+  sgBastionOutboundIpProtocol:
+    Type: String
+    Description: Outbound IP Protocol for Bastion Host Security Group Inbound Rule
+
+  sgAppInboundCidrIp:
+    Type: String
+    Description: Inbound IPv4 address range for app security group
+
+  sgAppInboundIpProtocolSsh:
+    Type: String
+    Description: Inbound SSH IP protocol for app security group
+
+  sgAppInboundSshPort:
+    Type: String
+    Description:  SSH port range start port number for app 
+
+  sgAppInboundIpProtocolHttp:
+    Type: String
+    Description: Inbound HTTP IP protocol for app security group
+
+  sgAppInboundHttpPort:
+    Type: String
+    Description:  HTTP port range start port number for app 
+
+  sgAppInboundIpProtocolHttps:
+    Type: String
+    Description: Inbound HTTPs IP protocol for app security group
+
+  sgAppInboundHttpsPort:
+    Type: String
+    Description:  HTTPs port range start port number for app 
+
+  sgAppInboundIpProtocolAppServer:
+    Type: String
+    Description: Inbound AppServer IP protocol for app security group
+
+  sgAppInboundAppServerPort:
+    Type: String
+    Description:  AppServer port range start port number for app 
+
+
+  # sgAppInboundPortRangeEnd:
+  #   Type: String
+  #   Description:  Port range end port number for app 
+
+  sgAppOutboundCidrIp:
+    Type: String
+    Description: Outbound IPv4 address range for app security group
+
+  sgAppOutboundIpProtocol:
+    Type: String
+    Description: Outbound IP protocol for app security group
+
+  sgAlbInboundCidrIp:
+    Type: String
+    Description: Inbound IPv4 address range for ALB security group
+  sgAlbInboundIpProtocol:
+    Type: String
+    Description: Inbound SSH IP protocol for ALB security group
+  sgAlbInboundPort:
+    Type: String
+    Description:  SSH port range start port number for ALB 
+  sgAlbOutboundCidrIp:
+    Type: String
+    Description: Outbound IPv4 address range for ALB security group
+  sgAlbOutboundIpProtocol:
+    Type: String
+    Description: Outbound IP protocol for ALB security group
+
+
+
+
+  # sgBastionGroupDescription:
+  #   Type: String
+  #   Description: Bastion Host Security Group Description
+
+  # sgBastionGroupName:
+  #   Type: String
+  #   Description: Bastion Host Security Group Name
+
+  # sgBastionSecurityGroupEgress:
+
+  # sgBastionSecurityGroupIngress:
+
+
+Resources:
+  bastionSecurityGroup:
+  Type: AWS::EC2::SecurityGroup
+  Properties:
+    GroupDescription: SecurityGroup to allow SSH connection to App
+    GroupName: Bastion SG
+    VpcId: !Ref sgVpcId
+    Tags:
+      - Key: Name
+        Value: !Sub ${project}-${app}-${env}-sgBastion
+      - Key: project
+        Value: !Ref project
+      - Key: environment
+        Value: !Ref env
+      - Key: app
+        Value: !Ref app
+
+  bastionInboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      CidrIp: !Ref sgBastionInboundCidrIp 
+      IpProtocol: !Ref sgBastionInboundIpProtocol
+      FromPort: !Ref sgBastionInboundPortRangeStart
+      ToPort: !Ref sgBastionInboundPortRangeEnd
+      #SourceSecurityGroupId: !GetAtt appSecurityGroup.GroupId
+      GroupId: !GetAtt bastionSecurityGroup.GroupId
+
+  bastionOutboundRule:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      CidrIp: !Ref sgBastionOutboundCidrIp
+      IpProtocol: !Ref sgBastionOutboundIpProtocol
+      DestinationSecurityGroupId: !GetAtt appSecurityGroup.GroupId
+      GroupId: !GetAtt bastionSecurityGroup.GroupId
+
+  appSecurityGroup:
+  Type: AWS::EC2::SecurityGroup
+  Properties:
+    GroupDescription: SG to allow SSH connection from Bastion Host to App
+    GroupName: App SG
+    VpcId: !Ref sgVpcId
+    Tags:
+      - Key: Name
+        Value: !Sub ${project}-${app}-${env}-sgBastion
+      - Key: project
+        Value: !Ref project
+      - Key: environment
+        Value: !Ref env
+      - Key: app
+        Value: !Ref app
+
+  appInboundRuleSsh:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      #CidrIp: !Ref sgBastionInboundCidrIp 
+      IpProtocol: !Ref sgAppInboundIpProtocolSsh
+      FromPort: !Ref sgAppInboundSshPort
+      ToPort: !Ref sgAppInboundSshPort
+      SourceSecurityGroupId: !GetAtt bastionSecurityGroup.GroupId
+      GroupId: !GetAtt appSecurityGroup.GroupId
+
+  appInboundRuleHttp:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      #CidrIp: !Ref sgBastionInboundCidrIp 
+      IpProtocol: !Ref sgAppInboundIpProtocolHttp
+      FromPort: !Ref sgAppInboundHttpPort
+      ToPort: !Ref sgAppInboundHttpPort
+      SourceSecurityGroupId: !GetAtt bastionSecurityGroup.GroupId
+      GroupId: !GetAtt appSecurityGroup.GroupId
+  
+  appInboundRuleHttps:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      #CidrIp: !Ref sgBastionInboundCidrIp 
+      IpProtocol: !Ref sgAppInboundIpProtocolHttps
+      FromPort: !Ref sgAppInboundHttpsPort
+      ToPort: !Ref sgAppInboundHttpsPort
+      SourceSecurityGroupId: !GetAtt bastionSecurityGroup.GroupId
+      GroupId: !GetAtt appSecurityGroup.GroupId
+
+  appInboundRuleHttps:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      #CidrIp: !Ref sgBastionInboundCidrIp 
+      IpProtocol: !Ref sgAppInboundIpProtocolHttps
+      FromPort: !Ref sgAppInboundHttpsPort
+      ToPort: !Ref sgAppInboundHttpsPort
+      SourceSecurityGroupId: !GetAtt bastionSecurityGroup.GroupId
+      GroupId: !GetAtt appSecurityGroup.GroupId
+
+  appInboundRuleAppServer:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      #CidrIp: !Ref sgBastionInboundCidrIp 
+      IpProtocol: !Ref sgAppInboundIpProtocolAppServer
+      FromPort: !Ref sgAppInboundAppServerPort
+      ToPort: !Ref sgAppInboundAppServerPort
+      SourceSecurityGroupId: !GetAtt bastionSecurityGroup.GroupId
+      GroupId: !GetAtt appSecurityGroup.GroupId
+
+  appOutboundRule:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      CidrIp: !Ref sgAppOutboundCidrIp
+      IpProtocol: !Ref sgAppOutboundIpProtocol
+      # DestinationSecurityGroupId: !GetAtt appSecurityGroup.GroupId
+      GroupId: !GetAtt appSecurityGroup.GroupId
+
+  albSecurityGroup:
+  Type: AWS::EC2::SecurityGroup
+  Properties:
+    GroupDescription: SG for ALB
+    GroupName: Alb SG
+    VpcId: !Ref sgVpcId
+    Tags:
+      - Key: Name
+        Value: !Sub ${project}-${app}-${env}-sgBastion
+      - Key: project
+        Value: !Ref project
+      - Key: environment
+        Value: !Ref env
+      - Key: app
+        Value: !Ref app
+
+  albInboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      #CidrIp: !Ref sgBastionInboundCidrIp 
+      IpProtocol: !Ref sgAppInboundIpProtocolSsh
+      FromPort: !Ref sgAppInboundSshPort
+      ToPort: !Ref sgAppInboundSshPort
+      SourceSecurityGroupId: !GetAtt bastionSecurityGroup.GroupId
+      GroupId: !GetAtt appSecurityGroup.GroupId
+
+  appOutboundRule:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      CidrIp: !Ref sgAppOutboundCidrIp
+      IpProtocol: !Ref sgAppOutboundIpProtocol
+      # DestinationSecurityGroupId: !GetAtt appSecurityGroup.GroupId
+      GroupId: !GetAtt appSecurityGroup.GroupId
+

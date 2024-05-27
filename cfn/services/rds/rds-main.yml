@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: main yml file for security groups
+Parameters:
+  project:
+    Type: String
+    Description:  Project Name
+    Default: devops-training
+  app:
+    Type: String
+    Description:  Application Name
+    Default: app
+  env:
+    Type: String
+    Description:  Environment Name
+    Default: dev
+  s3ArtifactPath:
+    Type: String
+    Description: Artifact Bucket Path
+    Default: "https://devops-crosstrack-training.s3.amazonaws.com/code/experienced-resource-training/saad/cfn/services/"

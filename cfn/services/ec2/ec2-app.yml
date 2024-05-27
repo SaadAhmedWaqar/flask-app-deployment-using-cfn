@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: cfn template to deploy ec2
+
+Parameters:
+  project:
+    Type: String
+    Description: Project Name
+  env:
+    Type: String
+    Description: Environment Name
+  app:
+    Type: String
+    Description: App Name
+
+  ec2KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: must be the name of an existing EC2 KeyPair.
+  
+  ec2InstanceType:
+    Description: WebServer EC2 instance type
+    Type: String
+    # Default: t3.small
+    AllowedValues: [t2.nano, t2.micro, t2.small, t2.medium, t2.large, t2.xlarge, t2.2xlarge,
+      t3.nano, t3.micro, t3.small, t3.medium, t3.large, t3.xlarge, t3.2xlarge]
+    Description: must be a valid EC2 instance type.
+
+  ec2IamInstanceProfile:
+    Description: Name of IAM instance profile
+    Type: String
+
+  ec2LaunchTemplate:
+    Description: launch template to use to launch instances
+    Type: AWS::EC2::LaunchTemplate
+
+  ec2SecurityGroupIds:
+    Description: IDs of the security group to be attached to ec2
+    Type: String
+
+  ec2SubnetId:
+    Description: ID of the subnet to launch the instance into.
+    Type: String
+
+  ec2UserData:
+    Description:  parameters or scripts to store as user data, which runs on instance launch
+    Type: String
+
+
+
+Resources:
+  ec2:
+  Type: AWS::EC2::Instance
+  Properties:
+    IamInstanceProfile: !Ref ec2IamInstanceProfile
+    InstanceType: !Ref ec2InstanceType 
+    KeyName: !Ref ec2KeyName
+    LaunchTemplate: !Ref ec2LaunchTemplate 
+    SecurityGroupIds: !Ref ec2SecurityGroupIds
+    SubnetId: !Ref ec2SubnetId
+    # Tenancy: String
+    UserData: !Ref ec2UserData
+
+    Tags:
+      - Key: Name
+        Value: !Sub ${project}-${app}-${env}-ec2
+      - Key: project
+        Value: !Ref project
+      - Key: environment
+        Value: !Ref env
+      - Key: app
+        Value: !Ref app

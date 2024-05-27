@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: main yml file for vpc
+Parameters:
+  project:
+    Type: String
+    Description:  Project Name
+    Default: devops-training
+  app:
+    Type: String
+    Description:  Application Name
+    Default: app
+  env:
+    Type: String
+    Description:  Environment Name
+    Default: dev
+  s3ArtifactPath:
+    Type: String
+    Description: Artifact Bucket Path
+    Default: "https://devops-crosstrack-training.s3.amazonaws.com/code/experienced-resource-training/saad/cfn/services/"
+
+Resources:
+  vpc:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "${s3ArtifactPath}vpc/vpc-app.yml"
+      Parameters:
+        project: !Ref project
+        app: !Ref app
+        env: !Ref env
+        vpcCidr: 10.10.0.0/16
+        vpcPrivateSubnet01Cidr: 10.10.0.0/24
+        vpcShieldSubnet01Cidr: 10.10.1.0/24
+        vpcPublicSubnet01Cidr:  10.10.2.0/24
+        vpcPrivateSubnet02Cidr: 10.10.3.0/24
+        vpcShieldSubnet02Cidr: 10.10.4.0/24
+        vpcPublicSubnet02Cidr:  10.10.5.0/24
+        vpcInternetOutboundCidr: 0.0.0.0/0
+        vpcPublicRouteDestinationCidr: 0.0.0.0/0
+        vpcNaclPublicInboundProtocol: -1
+        vpcNaclPublicOutboundProtocol: -1
+        vpcNaclRuleActionPublicSubnetOutbound: allow
+        vpcNaclRuleActionPublicSubnetInbound: allow
+        vpcNaclPublicInboundCidr: 0.0.0.0/0
+        vpcNaclPublicInboundStartPort: 1
+        vpcNaclPublicInboundEndPort: 999
+        vpcPrivateRouteDestinationCidr: 0.0.0.0/0
+        vpcNaclPrivateInboundProtocol: -1
+        vpcNaclPrivateOutboundProtocol: -1
+        vpcNaclRuleActionPrivateSubnetInbound: allow
+        vpcNaclRuleActionPrivateSubnetOutbound: allow
+        vpcNaclPrivateInboundCidr: 0.0.0.0/0
+        vpcNaclPrivateInboundStartPort: 1
+        vpcNaclPrivateInboundEndPort: 999
+        vpcShieldRouteDestinationCidr: 0.0.0.0/0
+        vpcNaclShieldInboundProtocol: -1
+        vpcNaclShieldOutboundProtocol: -1
+        vpcNaclRuleActionShieldSubnetInbound: allow
+        vpcNaclRuleActionShieldSubnetOutbound: allow
+        vpcNaclShieldInboundCidr: 0.0.0.0/0
+        vpcNaclShieldInboundStartPort: 1
+        vpcNaclShieldInboundEndPort: 999
+        vpcDnsSupport: true
+        vpcDnsHostnames: true
+        vpcInstanceTennancy: default
+        vpcMapPublicIpforPublicSubnet: true
+
+Outputs:
+  vpcId:
+    Description: VPC main 
+    Value: !Ref vpc
+    Export:
+      Name: !Sub "${project}-${app}-${env}-vpcStack-${AWS::Region}"
+
+
+
+
+
+

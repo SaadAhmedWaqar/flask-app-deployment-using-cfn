@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: main yml file for vpc
+Parameters:
+  project:
+    Type: String
+    Description:  Project Name
+    Default: devops-training
+  app:
+    Type: String
+    Description:  Application Name
+    Default: app
+  env:
+    Type: String
+    Description:  Environment Name
+    Default: dev
+  s3ArtifactPath:
+    Type: String
+    Description: Artifact Bucket Path
+    Default: "https://devops-crosstrack-training.s3.amazonaws.com/code/experienced-resource-training/saad/cfn/services/"
+
+Resources:
+  ec2:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "${s3ArtifactPath}ec2/ec2-app.yml"
+      Parameters:
+        project: !Ref project
+        app: !Ref app
+        env: !Ref env
+
+      ec2KeyName:
+      ec2InstanceType: t3.micro
+      ec2IamInstanceProfile:
+      ec2LaunchTemplate:
+      ec2SecurityGroupIds:
+      ec2SubnetId: !ImportValue 
+        Fn::Sub: "${project}-${app}-${env}-privateSubnet01Az01Id-${AWS::Region}"
+      #ec2UserData:
+
+
+
+
+Outputs:
+  ec2Id:
+    Description: EC2 main 
+    Value: !Ref ec2
+    Export:
+      Name: !Sub "${project}-${app}-${env}-ec2Stack-${AWS::Region}"
