@@ -1,0 +1,34 @@
+#AWS S3 bucket sync 
+aws s3 sync . s3://devops-crosstrack-training/code/
+aws s3 sync . s3://sad-app-bucket/flask-app-deploymment-using-cfn/
+
+
+
+#VPC create dev
+aws cloudformation create-stack --stack-name training-app-dev-vpc --template-body file://cfn/services/vpc/vpc-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1
+
+#vpc update dev
+aws cloudformation update-stack --stack-name training-app-dev-vpc --template-body file:vpc-main.yml --parameters ParameterKey=project,ParameterValue=training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1
+
+#EC2 create dev
+aws cloudformation create-stack --stack-name training-app-dev-ec2 --template-body file://cfn/services/ec2/ec2-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1
+
+#EC2 update dev
+aws cloudformation update-stack --stack-name training-app-dev-ec2 --template-body file://cfn/services/ec2/ec2-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1
+
+#SecurityGroup create dev
+aws cloudformation create-stack --stack-name training-app-dev-securityGroup --template-body file://cfn/services/securityGroup/securityGroup-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1
+
+#SecurityGroup update dev
+aws cloudformation update-stack --stack-name training-app-dev-securityGroup --template-body file://cfn/services/securityGroup/securityGroup-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1
+
+#Iam create dev
+aws cloudformation create-stack --stack-name training-app-dev-iam --template-body file://cfn/services/iam/iam-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1
+
+#Iam update dev
+aws cloudformation update-stack --stack-name training-app-dev-iam --template-body file://cfn/services/iam/iam-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1
+
+
+
+#Dev Main
+aws cloudformation create-stack --stack-name training-app-dev-app-deployment --template-body file://cfn/stacks/dev/main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1

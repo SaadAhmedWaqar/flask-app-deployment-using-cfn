@@ -16,7 +16,8 @@ Parameters:
   s3ArtifactPath:
     Type: String
     Description: Artifact Bucket Path
-    Default: "https://devops-crosstrack-training.s3.amazonaws.com/code/experienced-resource-training/saad/cfn/services/"
+    # Default: "https://devops-crosstrack-training.s3.amazonaws.com/code/experienced-resource-training/saad/cfn/services/"
+    Default: "https://sad-app-bucket.s3.amazonaws.com/flask-app-deploymment-using-cfn/cfn/services/"
 
 Resources:
   vpc:

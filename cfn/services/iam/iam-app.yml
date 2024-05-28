@@ -65,3 +65,21 @@ Resources:
           Value: !Ref env
 
 
+Outputs:
+  ec2IamRoleId:
+    Value: !Ref ec2IamRole
+    Export:
+      Name: !Sub '${project}-${app}-${env}-ec2IamRoleId'
+  ec2IamRoleArn:
+    Value: !GetAtt ec2IamRole.Arn
+    Export:
+      Name: !Sub '${project}-${app}-${env}-ec2IamRoleArn'
+
+  rdsIamRoleId:
+    Value: !Ref rdsIamRole
+    Export:
+      Name: !Sub '${project}-${app}-${env}-rdsIamRoleId'
+  rdsIamRoleArn:
+    Value: !GetAtt rdsIamRole.Arn
+    Export:
+      Name: !Sub '${project}-${app}-${env}-rdsIamRoleArn'

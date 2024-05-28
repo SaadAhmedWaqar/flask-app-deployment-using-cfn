@@ -11,7 +11,6 @@ Parameters:
   app:
     Type: String
     Description: App Name
-
   sgVpcId:
     Type: String
     Description: Vpc ID
@@ -146,7 +145,8 @@ Resources:
       FromPort: !Ref sgBastionInboundPortRangeStart
       ToPort: !Ref sgBastionInboundPortRangeEnd
       #SourceSecurityGroupId: !GetAtt appSecurityGroup.GroupId
-      GroupId: !GetAtt bastionSecurityGroup.GroupId
+      # GroupId: !GetAtt bastionSecurityGroup.GroupId
+      GroupId: !Ref bastionSecurityGroup
 
   bastionOutboundRule:
     Type: AWS::EC2::SecurityGroupEgress
@@ -154,7 +154,8 @@ Resources:
       CidrIp: !Ref sgBastionOutboundCidrIp
       IpProtocol: !Ref sgBastionOutboundIpProtocol
       DestinationSecurityGroupId: !GetAtt appSecurityGroup.GroupId
-      GroupId: !GetAtt bastionSecurityGroup.GroupId
+      # GroupId: !GetAtt bastionSecurityGroup.GroupId
+      GroupId: !Ref bastionSecurityGroup
 
   appSecurityGroup:
   Type: AWS::EC2::SecurityGroup
@@ -175,12 +176,13 @@ Resources:
   appInboundRuleSsh:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
-      #CidrIp: !Ref sgBastionInboundCidrIp 
+      CidrIp: !Ref sgBastionInboundCidrIp 
       IpProtocol: !Ref sgAppInboundIpProtocolSsh
       FromPort: !Ref sgAppInboundSshPort
       ToPort: !Ref sgAppInboundSshPort
       SourceSecurityGroupId: !GetAtt bastionSecurityGroup.GroupId
-      GroupId: !GetAtt appSecurityGroup.GroupId
+      # GroupId: !GetAtt appSecurityGroup.GroupId
+      GroupId: !Ref appSecurityGroup
 
   appInboundRuleHttp:
     Type: AWS::EC2::SecurityGroupIngress
@@ -190,7 +192,8 @@ Resources:
       FromPort: !Ref sgAppInboundHttpPort
       ToPort: !Ref sgAppInboundHttpPort
       SourceSecurityGroupId: !GetAtt bastionSecurityGroup.GroupId
-      GroupId: !GetAtt appSecurityGroup.GroupId
+      # GroupId: !GetAtt appSecurityGroup.GroupId
+      GroupId: !Ref appSecurityGroup  
   
   appInboundRuleHttps:
     Type: AWS::EC2::SecurityGroupIngress
@@ -200,17 +203,18 @@ Resources:
       FromPort: !Ref sgAppInboundHttpsPort
       ToPort: !Ref sgAppInboundHttpsPort
       SourceSecurityGroupId: !GetAtt bastionSecurityGroup.GroupId
-      GroupId: !GetAtt appSecurityGroup.GroupId
-
-  appInboundRuleHttps:
-    Type: AWS::EC2::SecurityGroupIngress
-    Properties:
-      #CidrIp: !Ref sgBastionInboundCidrIp 
-      IpProtocol: !Ref sgAppInboundIpProtocolHttps
-      FromPort: !Ref sgAppInboundHttpsPort
-      ToPort: !Ref sgAppInboundHttpsPort
-      SourceSecurityGroupId: !GetAtt bastionSecurityGroup.GroupId
-      GroupId: !GetAtt appSecurityGroup.GroupId
+      # GroupId: !GetAtt appSecurityGroup.GroupId
+      GroupId: !Ref appSecurityGroup
+  
+  # appInboundRuleHttps:
+  #   Type: AWS::EC2::SecurityGroupIngress
+  #   Properties:
+  #     #CidrIp: !Ref sgBastionInboundCidrIp 
+  #     IpProtocol: !Ref sgAppInboundIpProtocolHttps
+  #     FromPort: !Ref sgAppInboundHttpsPort
+  #     ToPort: !Ref sgAppInboundHttpsPort
+  #     SourceSecurityGroupId: !GetAtt bastionSecurityGroup.GroupId
+  #     GroupId: !GetAtt appSecurityGroup.GroupId
 
   appInboundRuleAppServer:
     Type: AWS::EC2::SecurityGroupIngress
