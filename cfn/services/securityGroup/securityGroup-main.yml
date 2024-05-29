@@ -16,7 +16,8 @@ Parameters:
   s3ArtifactPath:
     Type: String
     Description: Artifact Bucket Path
-    Default: "https://devops-crosstrack-training.s3.amazonaws.com/code/experienced-resource-training/saad/cfn/services/"
+    # Default: "https://devops-crosstrack-training.s3.amazonaws.com/code/experienced-resource-training/saad/cfn/services/"
+    Default: "https://sad-app-bucket.s3.amazonaws.com/flask-app-deploymment-using-cfn/cfn/services/"
 
 Resources:
   securityGroup:
@@ -30,29 +31,37 @@ Resources:
         sgVpcId: !ImportValue 
           Fn::Sub: "${project}-${app}-${env}-vpcId-${AWS::Region}"
 
-        sgbastionInboundCidrIp: 0.0.0.0/0
-        sgBastionInboundIpProtocol: ssh
+        sgBastionInboundCidrIp: 0.0.0.0/0
+        sgBastionInboundIpProtocol: tcp
         sgBastionInboundPortRangeStart: 22
         sgBastionInboundPortRangeEnd: 22
         sgBastionOutboundCidrIp: 0.0.0.0/0
         sgBastionOutboundIpProtocol: -1
 
-        # sgAppInboundCidrIp: 0.0.0.0/0
-        sgAppInboundIpProtocolSsh: ssh
+        sgAppInboundCidrIp: 0.0.0.0/0
+        sgAppInboundIpProtocolSsh: tcp
         sgAppInboundSshPort: 22
         # sgAppInboundPortRangeEnd: 22
 
-        sgAppInboundIpProtocolHttp: http
+        sgAppInboundIpProtocolHttp: tcp
         sgAppInboundHttpPort: 80
 
-        sgAppInboundIpProtocolHttps: https
+        sgAppInboundIpProtocolHttps: tcp
         sgAppInboundHttpsPort: 443
 
         sgAppInboundIpProtocolAppServer: tcp
         sgAppInboundAppServerPort: 8000
 
         sgAppOutboundCidrIp: 0.0.0.0/0
-        sgAppOutboundIpProtocol: -1       
+        sgAppOutboundIpProtocol: -1   
+
+        sgAlbInboundCidrIp: 0.0.0.0/0
+        sgAlbInboundIpProtocol: -1
+        sgAlbInboundStartPort: 0
+        sgAlbInboundEndPort: 65535
+        sgAlbOutboundCidrIp: -1
+        sgAlbOutboundIpProtocol: -1
+
 
 
 # vpcPrivateSubnet01Cidr: 10.10.0.0/24
@@ -65,7 +74,7 @@ Resources:
 
 Outputs:
   securityGroupId:
-    Description: securityGroup main 
+    Description: securityGroup stack ID
     Value: !Ref securityGroup
     Export:
       Name: !Sub "${project}-${app}-${env}-securityGroupStack-${AWS::Region}"
