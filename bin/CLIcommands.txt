@@ -22,12 +22,18 @@ aws cloudformation create-stack --stack-name training-app-dev-securityGroup --te
 #SecurityGroup update dev
 aws cloudformation update-stack --stack-name training-app-dev-securityGroup --template-body file://cfn/services/securityGroup/securityGroup-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1
 
+#Rds create dev
+aws cloudformation create-stack --stack-name training-app-dev-rds --template-body file://cfn/services/rds/rds-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1
+
+#Rds update dev
+aws cloudformation update-stack --stack-name training-app-dev-rds --template-body file://cfn/services/rds/rds-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1
+
+
 #Iam create dev
 aws cloudformation create-stack --stack-name training-app-dev-iam --template-body file://cfn/services/iam/iam-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1
 
 #Iam update dev
 aws cloudformation update-stack --stack-name training-app-dev-iam --template-body file://cfn/services/iam/iam-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1
-
 
 
 #Dev Main

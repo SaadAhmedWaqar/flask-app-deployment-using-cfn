@@ -62,13 +62,12 @@ Resources:
         sgAlbOutboundCidrIp: -1
         sgAlbOutboundIpProtocol: -1
 
-
-
-# vpcPrivateSubnet01Cidr: 10.10.0.0/24
-
-
-        # sgBastionGroupDescription:
-        # sgBastionGroupName:
+        sgRdsInboundCidrIp: 0.0.0.0/0
+        sgRdsInboundIpProtocol: tcp
+        sgRdsInboundPortRangeStart: 0
+        sgRdsInboundPortRangeEnd: 65535
+        sgRdsOutboundCidrIp: 0.0.0.0/0
+        sgRdsOutboundIpProtocol: -1
 
 
 

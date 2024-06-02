@@ -1,5 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: main yml file for security groups
+
 Parameters:
   project:
     Type: String
@@ -16,4 +17,47 @@ Parameters:
   s3ArtifactPath:
     Type: String
     Description: Artifact Bucket Path
-    Default: "https://devops-crosstrack-training.s3.amazonaws.com/code/experienced-resource-training/saad/cfn/services/"
+    # Default: "https://devops-crosstrack-training.s3.amazonaws.com/code/experienced-resource-training/saad/cfn/services/"
+    Default: "https://sad-app-bucket.s3.amazonaws.com/flask-app-deploymment-using-cfn/cfn/services/"
+
+
+Resources:
+  rdsInstance:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "${s3ArtifactPath}rds/rds-app.yml"
+      Parameters:
+        project: !Ref project
+        app: !Ref app
+        env: !Ref env
+        rdsInstanceIdentifier: flask-db
+        rdsDbName: flaskTodos
+        rdsInstanceClass: db.t3.micro
+        rdsEngineVersion: 15
+
+        rdsSubnetGroupSubnet01: !ImportValue 
+          Fn::Sub: "${project}-${app}-${env}-publicSubnet01Az01Id-${AWS::Region}"
+        rdsSubnetGroupSubnet02:  !ImportValue 
+          Fn::Sub: "${project}-${app}-${env}-privateSubnet02Az02Id-${AWS::Region}"
+
+        rdsSecurityGroup:  !ImportValue 
+          Fn::Sub: "${project}-${app}-${env}-rdsSecurityGroupID-${AWS::Region}"
+
+        rdsEncryptionStatus: true
+        rdsPublicAccess: true
+        rdsStorageType: gp2
+        rdsDeletionProtection: false
+        rdsAllocatedStorage: 10
+        rdsEngine: postgres
+        rdsUsername: postgre
+        rdsPassword: abcd1234
+
+
+Outputs:
+  securityGroupId:
+    Description: Rds stack ID
+    Value: !Ref rdsInstance
+    Export:
+      Name: !Sub "${project}-${app}-${env}-rdsInstanceStack-${AWS::Region}"
+
+

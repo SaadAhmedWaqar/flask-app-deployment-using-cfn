@@ -14,29 +14,133 @@ Parameters:
     Type: String
     Description: App Name
 
-  dBInstanceIdentifier:
+  rdsInstanceIdentifier:
     Type: String
     Description: Name for the DB instance
-  dbName: 
+  rdsDbName: 
     Type: String
     Description: Name for the DB 
 
 
+  rdsAllocatedStorage:
+    Type: Number 
+    Default: 10
+    MinValue: 1
+    MaxValue: 100
+    Description: Amount of storage given to database instance
+  rdsInstanceClass:
+    Type: String
+    Description: Instance type of the database
+  # DBName:
+  #   Type: String
+  #   Description: Name of DB to create when instance is initiated
+
+
+  rdsEngine:
+    Type: String
+    Description: Database engine that you want to use for this DB instance
+  rdsUsername:
+    Type: String
+    NoEcho: true
+    Description: The Username for database access
+  rdsPassword:
+    Type: String
+    NoEcho: true
+    Description: The Password for database access
+  rdsDeletionProtection:
+    Type: String
+    Default: true
+    AllowedValues: [true, false]
+    Description: Select true to enable deletion protection on database and false to disable
+  rdsEngineVersion:
+    Type: String
+    Default: 15
+    Description: Version number of database engine 
+  rdsPort:
+    Type: String
+    Default: 5432
+    Description: DB port number on which it accepts connections
+  rdsEncryptionStatus:
+    Type: String
+    Default: true
+    AllowedValues: [true, false]
+    Description: Select true to enable encryption on RDS, false otherwise 
+  rdsSubnetGroupSubnet01:
+    Type: AWS::EC2::Subnet::Id
+    Description: Subnet ID of a subnet for RDS subnet group
+  rdsSubnetGroupSubnet02:
+    Type: AWS::EC2::Subnet::Id
+    Description: Subnet ID of a subnet for RDS subnet group
+  rdsSecurityGroup: #VPCSecurityGroups
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: Id of security group to be assigned to RDS
+  rdsPublicAccess:
+    Type: String
+    Default: true
+    AllowedValues: [true, false]
+    Description: Select true to create an internet-facing RDS false othervise
+  rdsStorageType:
+    Type: String
+    Default: gp2
+    AllowedValues: [standard, io1 , gp2]
+    Description: Storage type for DB instance
+
 Resources:
-  dbSubnetGroup:
-    Type: "AWS::RDS::DBSubnetGroup"
+  rdsSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
     Properties:
-        DBSubnetGroupDescription: "Subnet Group for database"
-        DBSubnetGroupName: !Sub "${project}-${app}-${env}-${dBInstanceIdentifier}-${AWS::Region}"
-        SubnetIds: 
-          - !Ref 
-          - !Ref 
-        Tags:
-        - Key: name
-          Value: !Sub "${project}-${app}-${env}-${dBInstanceIdentifier}-${AWS::Region}"
+      DBSubnetGroupDescription: RDS Subnet Group 
+      DBSubnetGroupName: !Sub "${project}-${app}-${env}-${rdsInstanceIdentifier}-subnetgroup-${AWS::Region}"
+      SubnetIds: 
+        - !Ref rdsSubnetGroupSubnet01
+        - !Ref rdsSubnetGroupSubnet02
+      Tags:
+      - Key: name
+        Value: !Sub "${project}-${app}-${env}-${rdsInstanceIdentifier}-${AWS::Region}"
+      - Key: project
+        Value: !Ref project
+      - Key: app
+        Value: !Ref app
+      - Key: environment
+        Value: !Ref env
+
+  rdsInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: !Sub "${project}-${env}-${rdsInstanceIdentifier}-${AWS::Region}"
+      DBName: !Ref rdsDbName
+      Port: !Ref rdsPort
+      DBSubnetGroupName: !Ref rdsSubnetGroup
+      DBInstanceClass: !Ref rdsInstanceClass
+      AllocatedStorage: !Ref rdsAllocatedStorage
+      Engine: !Ref rdsEngine
+      EngineVersion: !Ref rdsEngineVersion
+      StorageType: !Ref rdsStorageType
+      DeletionProtection: !Ref rdsDeletionProtection
+      StorageEncrypted: !Ref rdsEncryptionStatus
+      PubliclyAccessible: !Ref rdsPublicAccess
+      MasterUsername: !Ref rdsUsername
+      MasterUserPassword: !Ref rdsPassword
+      VPCSecurityGroups: 
+        - !Ref rdsSecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Sub "${project}-${env}-DB-${AWS::Region}"
         - Key: project
           Value: !Ref project
-        - Key: app
-          Value: !Ref app
         - Key: environment
-          Value: !Ref env
+          Value: !Ref env   
+ 
+Outputs:
+  dbInstanceArn:
+    Value: !GetAtt rdsInstance.DBInstanceArn
+    Export:
+      Name: !Sub "${project}-${env}-rdsInstanceArn-${AWS::Region}"
+  dBInstanceIdentifier:
+    Description: Identifier of the rds instance
+    Value: !Ref rdsInstance
+    Export:
+      Name: !Sub "${project}-${env}-rdsInstancename-${AWS::Region}"
+   
+
+

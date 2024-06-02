@@ -34,6 +34,27 @@ Parameters:
     Type: String
     Description: Outbound IP Protocol for Bastion Host Security Group Inbound Rule
 
+  sgRdsInboundCidrIp:
+    Type: String
+    Description: Inbound Cidr for Rds Host Security Group Inbound Rule
+  sgRdsInboundIpProtocol:
+    Type: String
+    Description: Inbound IP Protocol for Rds Host Security Group Inbound Rule
+  sgRdsInboundPortRangeStart:
+    Type: String
+    Description:  Port range start port number for Rds inbound rule 
+  sgRdsInboundPortRangeEnd:
+    Type: String
+    Description:  Port range end port number for Rds inbound rule 
+  sgRdsOutboundCidrIp:
+    Type: String
+    Description: Outbound Cidr for Rds Host Security Group Outbound Rule
+  sgRdsOutboundIpProtocol:
+    Type: String
+    Description: Outbound IP Protocol for Rds Host Security Group Inbound Rule
+
+
+
   sgAppInboundCidrIp:
     Type: String
     Description: Inbound IPv4 address range for app security group
@@ -99,13 +120,10 @@ Parameters:
   # sgBastionGroupDescription:
   #   Type: String
   #   Description: Bastion Host Security Group Description
-
   # sgBastionGroupName:
   #   Type: String
   #   Description: Bastion Host Security Group Name
-
   # sgBastionSecurityGroupEgress:
-
   # sgBastionSecurityGroupIngress:
 
 
@@ -146,6 +164,45 @@ Resources:
       # DestinationSecurityGroupId: !Ref appSecurityGroup
       # GroupId: !GetAtt bastionSecurityGroup.GroupId
       GroupId: !Ref bastionSecurityGroup
+
+
+  rdsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: SecurityGroup for RDS connectivity
+      GroupName: Rds SG
+      VpcId: !Ref sgVpcId
+      Tags:
+        - Key: Name
+          Value: !Sub ${project}-${app}-${env}-sgRds
+        - Key: project
+          Value: !Ref project
+        - Key: environment
+          Value: !Ref env
+        - Key: app
+          Value: !Ref app
+
+  rdsInboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      CidrIp: !Ref sgRdsInboundCidrIp 
+      IpProtocol: !Ref sgRdsInboundIpProtocol
+      FromPort: !Ref sgRdsInboundPortRangeStart
+      ToPort: !Ref sgRdsInboundPortRangeEnd
+      #SourceSecurityGroupId: !GetAtt appSecurityGroup.GroupId
+      # GroupId: !GetAtt rdsSecurityGroup.GroupId
+      GroupId: !Ref rdsSecurityGroup
+
+  rdsOutboundRule:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      CidrIp: !Ref sgRdsOutboundCidrIp
+      IpProtocol: !Ref sgRdsOutboundIpProtocol
+      # DestinationSecurityGroupId: !GetAtt appSecurityGroup.GroupId
+      # DestinationSecurityGroupId: !Ref appSecurityGroup
+      # GroupId: !GetAtt rdsSecurityGroup.GroupId
+      GroupId: !Ref rdsSecurityGroup
+
 
   appSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -266,10 +323,6 @@ Resources:
       GroupId: !Ref albSecurityGroup
 
 
-
-
-
-
 Outputs:
   bastionSecurityGroupId:
     Description: Bastion SecurityGroup ID
@@ -286,3 +339,11 @@ Outputs:
     Value: !Ref albSecurityGroup
     Export:
       Name: !Sub "${project}-${app}-${env}-albSecurityGroupID-${AWS::Region}"
+
+
+  rdsSecurityGroupId:
+    Description: ALB SecurityGroup ID
+    Value: !Ref rdsSecurityGroup
+    Export:
+      Name: !Sub "${project}-${app}-${env}-rdsSecurityGroupID-${AWS::Region}"
+
