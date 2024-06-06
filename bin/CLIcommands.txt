@@ -36,5 +36,14 @@ aws cloudformation create-stack --stack-name training-app-dev-iam --template-bod
 aws cloudformation update-stack --stack-name training-app-dev-iam --template-body file://cfn/services/iam/iam-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1
 
 
+#Rds create dev new
+aws cloudformation create-stack --stack-name training-app-dev-rds --template-body file://cfn/services/rds/rds-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev ParameterKey=rdsUsername,ParameterValue=postgres ParameterKey=rdsPassword,ParameterValue=abcd1234 --region us-east-1
+
+
+
+
+
+
+
 #Dev Main
 aws cloudformation create-stack --stack-name training-app-dev-app-deployment --template-body file://cfn/stacks/dev/main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev --region us-east-1

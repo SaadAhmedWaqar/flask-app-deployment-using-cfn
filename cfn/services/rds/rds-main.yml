@@ -14,6 +14,16 @@ Parameters:
     Type: String
     Description:  Environment Name
     Default: dev
+
+  rdsUsername:
+    Type: String
+    NoEcho: true
+    Description: Rds DB username
+  rdsPassword:
+    Type: String
+    NoEcho: true
+    Description: Rds DB password
+
   s3ArtifactPath:
     Type: String
     Description: Artifact Bucket Path
@@ -49,8 +59,8 @@ Resources:
         rdsDeletionProtection: false
         rdsAllocatedStorage: 10
         rdsEngine: postgres
-        rdsUsername: postgre
-        rdsPassword: abcd1234
+        rdsUsername: !Ref rdsUsername
+        rdsPassword: !Ref rdsUsername
 
 
 Outputs:

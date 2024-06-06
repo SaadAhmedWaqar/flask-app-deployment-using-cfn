@@ -42,11 +42,11 @@ Parameters:
   rdsUsername:
     Type: String
     NoEcho: true
-    Description: The Username for database access
+    Description: Rds DB username
   rdsPassword:
     Type: String
     NoEcho: true
-    Description: The Password for database access
+    Description: Rds DB password
   rdsDeletionProtection:
     Type: String
     Default: true
@@ -84,6 +84,7 @@ Parameters:
     Default: gp2
     AllowedValues: [standard, io1 , gp2]
     Description: Storage type for DB instance
+
 
 Resources:
   rdsSubnetGroup:
