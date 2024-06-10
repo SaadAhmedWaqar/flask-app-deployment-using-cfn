@@ -37,8 +37,10 @@ aws cloudformation update-stack --stack-name training-app-dev-iam --template-bod
 
 
 #Rds create dev new
-aws cloudformation create-stack --stack-name training-app-dev-rds --template-body file://cfn/services/rds/rds-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev ParameterKey=rdsUsername,ParameterValue=postgres ParameterKey=rdsPassword,ParameterValue=abcd1234 --region us-east-1
+aws cloudformation create-stack --stack-name training-app-dev-rds --template-body file://cfn/services/rds/rds-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev ParameterKey=rdsUsername,ParameterValue=postgres ParameterKey=rdsPassword,ParameterValue=abcd1234 ParameterKey=rdsDbName,ParameterValue=flaskTodos --region us-east-1
 
+#Secrets Manager create dev
+aws cloudformation create-stack --stack-name training-app-dev-secretsmanager --template-body file://cfn/services/secretsmanager/secretsmanager-main.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=project,ParameterValue=devops-training ParameterKey=app,ParameterValue=app ParameterKey=env,ParameterValue=dev ParameterKey=smRdsUsername,ParameterValue=postgres ParameterKey=smRdsPassword,ParameterValue=abcd1234 ParameterKey=smRdsDbName,ParameterValue=flaskTodos --region us-east-1
 
 
 

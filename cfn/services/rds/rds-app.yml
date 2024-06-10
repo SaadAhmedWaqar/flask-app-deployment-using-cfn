@@ -136,12 +136,16 @@ Outputs:
   dbInstanceArn:
     Value: !GetAtt rdsInstance.DBInstanceArn
     Export:
-      Name: !Sub "${project}-${env}-rdsInstanceArn-${AWS::Region}"
+      Name: !Sub "${project}-${app}-${env}-rdsInstanceArn-${AWS::Region}"
   dBInstanceIdentifier:
     Description: Identifier of the rds instance
     Value: !Ref rdsInstance
     Export:
-      Name: !Sub "${project}-${env}-rdsInstancename-${AWS::Region}"
+      Name: !Sub "${project}-${app}-${env}-rdsInstancename-${AWS::Region}"
+  dbEndpoint:
+    Value: !GetAtt rdsInstance.Endpoint.Address
+    Export:
+      Name: !Sub "${project}-${app}-${env}-rdsEndpoint-${AWS::Region}"
    
 
 

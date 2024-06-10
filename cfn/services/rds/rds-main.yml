@@ -23,6 +23,9 @@ Parameters:
     Type: String
     NoEcho: true
     Description: Rds DB password
+  rdsDbName: 
+    Type: String
+    Description: Name for the DB 
 
   s3ArtifactPath:
     Type: String
@@ -30,7 +33,7 @@ Parameters:
     # Default: "https://devops-crosstrack-training.s3.amazonaws.com/code/experienced-resource-training/saad/cfn/services/"
     Default: "https://sad-app-bucket.s3.amazonaws.com/flask-app-deploymment-using-cfn/cfn/services/"
 
-
+#{"endpoint":"flask-todos.cprbjujzi4vu.us-east-1.rds.amazonaws.com","username":"postgres","password":"abcd1234","db_name":"flask_todos"}
 Resources:
   rdsInstance:
     Type: AWS::CloudFormation::Stack
@@ -41,7 +44,7 @@ Resources:
         app: !Ref app
         env: !Ref env
         rdsInstanceIdentifier: flask-db
-        rdsDbName: flaskTodos
+        rdsDbName: !Ref rdsDbName
         rdsInstanceClass: db.t3.micro
         rdsEngineVersion: 15
 
