@@ -16,8 +16,8 @@ Parameters:
   s3ArtifactPath:
     Type: String
     Description: Artifact Bucket Path
-    Default: "https://devops-crosstrack-training.s3.amazonaws.com/code/experienced-resource-training/saad/cfn/services/"
-
+    # Default: "https://devops-crosstrack-training.s3.amazonaws.com/code/experienced-resource-training/saad/cfn/services/"
+    Default: "https://sad-app-bucket.s3.amazonaws.com/flask-app-deploymment-using-cfn/cfn/services/"
 Resources:
   ec2:
     Type: AWS::CloudFormation::Stack
@@ -31,19 +31,20 @@ Resources:
         ec2KeyName: app-test
         ec2ImageId: ami-07caf09b362be10b8
         ec2InstanceType: t3.micro
-        ec2IamInstanceProfile:
-        ec2LaunchTemplate:
-        ec2SecurityGroupIds:
-        ec2SubnetId: !ImportValue 
-          Fn::Sub: "${project}-${app}-${env}-privateSubnet01Az01Id-${AWS::Region}"
-        #ec2UserData:
+        # ec2IamInstanceProfile:
+        # ec2LaunchTemplate:
+        # ec2SecurityGroupIds:
 
+        ec2BastionSecurityGroupId: !ImportValue 
+          Fn::Sub:  "${project}-${app}-${env}-bastionSecurityGroupID-${AWS::Region}"
+        ec2BastionSubnetId: !ImportValue 
+          Fn::Sub:  "${project}-${app}-${env}-publicSubnet01Az01Id-${AWS::Region}"
 
 
 
 Outputs:
   ec2Id:
-    Description: EC2 main 
+    Description: EC2 stack ID 
     Value: !Ref ec2
     Export:
       Name: !Sub "${project}-${app}-${env}-ec2Stack-${AWS::Region}"
